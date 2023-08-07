@@ -1,20 +1,19 @@
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator
 import kotlin.math.max
 import kotlin.math.sqrt
 
-fun calculateScore(stops: Set<Stop>, vehicles: List<Vehicle>): Score {
-    val missedDeliveries = findMissedDeliveries(stops, vehicles)
-    val totalCapacityOverage = vehicles.sumOf { it.capacityOverage() }
-    val totalDistance = vehicles.sumOf { it.distanceTravelled() }
 
-    return Score(
-        hard = -(missedDeliveries.size * 10 + totalCapacityOverage),
-        soft = -(totalDistance * 10).toInt()
-    )
-}
+class ScoreCalculator : EasyScoreCalculator<Solution, HardSoftScore> {
+    override fun calculateScore(solution: Solution): HardSoftScore {
+        val totalCapacityOverage = solution.vehicles.sumOf { it.capacityOverage() }
+        val totalDistance = solution.vehicles.sumOf { it.distanceTravelled() }
 
-fun findMissedDeliveries(stops: Set<Stop>, vehicles: List<Vehicle>): Set<Stop> {
-    val delivered = vehicles.flatMap { it.stops }.toSet()
-    return stops - delivered
+        return HardSoftScore.of(
+            -totalCapacityOverage,
+            -(totalDistance * 10).toInt()
+        )
+    }
 }
 
 fun Vehicle.capacityOverage(): Int {

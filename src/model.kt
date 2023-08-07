@@ -1,3 +1,8 @@
+data class Solution(
+    val stops: List<Stop>,
+    val vehicles: List<Vehicle>
+)
+
 data class Vehicle(
     val id: String,
     val capacity: Int,
@@ -14,9 +19,4 @@ data class Stop(
 data class Point(
     val x: Int,
     val y: Int
-)
-
-data class Score(
-    val hard: Int,
-    val soft: Int
 )

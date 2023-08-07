@@ -16,6 +16,7 @@ sourceSets {
 }
 
 dependencies {
+    implementation("org.optaplanner:optaplanner-core:9.41.0.Final")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.21")
 }
 
