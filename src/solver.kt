@@ -8,4 +8,6 @@ val vrpSolver = solver<Solution> {
     scoreDirectorFactory {
         easyScoreCalculatorClass = ScoreCalculator::class.java
     }
+
+    constructionHeuristic {  }
 }
