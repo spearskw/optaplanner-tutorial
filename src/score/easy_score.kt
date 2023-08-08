@@ -1,3 +1,8 @@
+package score
+
+import Point
+import Solution
+import Vehicle
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator
 import kotlin.math.max

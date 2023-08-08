@@ -1,6 +1,8 @@
 import dsl.*
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType
 import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig
+import score.ScoreCalculator
+import score.StreamScore
 
 val vrpSolver = solver<Solution> {
     entityClassList = listOf(

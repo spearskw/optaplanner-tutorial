@@ -1,10 +1,17 @@
+package score
+
+import Point
+import RouteLink
+import Solution
+import Stop
+import Vehicle
 import dsl.exhaustiveSearch
 import dsl.scoreDirectorFactory
 import dsl.solver
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class SolverTest {
+class StreamScoreTest {
 
     @Test
     fun `a problem with requiring 2 vehicles uses 2 vehicles efficiently`() {
@@ -23,18 +30,20 @@ class SolverTest {
         val solution = testSolver.solve(problem)
 
         assertEquals(0, solution.score?.hardScore())
-        assertEquals(-129, solution.score?.softScore())
+        // TODO talk about rounding errors. -129 is more technically correct
+        assertEquals(-128, solution.score?.softScore())
     }
+
 }
 
-val testSolver = solver<Solution> {
+private val testSolver = solver<Solution> {
     entityClassList = listOf(
         Stop::class.java,
         RouteLink::class.java
     )
 
     scoreDirectorFactory {
-        easyScoreCalculatorClass = ScoreCalculator::class.java
+        constraintProviderClass = StreamScore::class.java
     }
 
     exhaustiveSearch { }

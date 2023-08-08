@@ -1,4 +1,5 @@
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter
+import score.distance
 
 class StopNearby : NearbyDistanceMeter<RouteLink, RouteLink> {
     override fun getNearbyDistance(origin: RouteLink, destination: RouteLink): Double {
