@@ -1,5 +1,6 @@
 import dsl.*
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType
+import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig
 
 val vrpSolver = solver<Solution> {
     entityClassList = listOf(
@@ -16,8 +17,29 @@ val vrpSolver = solver<Solution> {
     }
 
     localSearch {
+        unionMoveSelector {
+            tailChainSwapMoveSelector { } //2-opt
+            changeMoveSelector { }
+            swapMoveSelector { }
+            subChainChangeMoveSelector {
+                selectReversingMoveToo = true
+                subChainSelectorConfig = SubChainSelectorConfig().apply {
+                    minimumSubChainSize = 2
+                }
+            }
+            subChainSwapMoveSelector {
+                selectReversingMoveToo = true
+            }
+        }
+        acceptor {
+            entityTabuSize = 5
+            simulatedAnnealingStartingTemperature = "10hard/400soft"
+        }
+        forager {
+            acceptedCountLimit = 4
+        }
         termination {
-            stepCountLimit = 1000
+            stepCountLimit = 30000
         }
     }
 }
