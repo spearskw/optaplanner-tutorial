@@ -1,4 +1,5 @@
 import dsl.*
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType
 
 val vrpSolver = solver<Solution> {
     entityClassList = listOf(
@@ -10,11 +11,13 @@ val vrpSolver = solver<Solution> {
         easyScoreCalculatorClass = ScoreCalculator::class.java
     }
 
-    constructionHeuristic { }
+    constructionHeuristic {
+        constructionHeuristicType = ConstructionHeuristicType.FIRST_FIT_DECREASING
+    }
 
     localSearch {
         termination {
-            stepCountLimit = 30000
+            stepCountLimit = 1000
         }
     }
 }

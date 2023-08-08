@@ -51,7 +51,7 @@ data class Vehicle(
         }
 }
 
-@PlanningEntity
+@PlanningEntity(difficultyWeightFactoryClass = AngleDifficultyFactory::class)
 data class Stop(
     @PlanningId
     val id: String,
