@@ -19,7 +19,12 @@ val vrpSolver = solver<Solution> {
     localSearch {
         unionMoveSelector {
             tailChainSwapMoveSelector { } //2-opt
-            changeMoveSelector { }
+            changeMoveSelector {
+                nearby("1", 25)
+            }
+            changeMoveSelector {
+                nearby("2", 10)
+            }
             swapMoveSelector { }
             subChainChangeMoveSelector {
                 selectReversingMoveToo = true
