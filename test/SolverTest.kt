@@ -1,3 +1,6 @@
+import dsl.exhaustiveSearch
+import dsl.scoreDirectorFactory
+import dsl.solver
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -13,13 +16,26 @@ class SolverTest {
             Stop("4", Point(-2, -1), 1)
         )
         val vehicles = listOf(
-            Vehicle("a",2, Point(0, 0)),
+            Vehicle("a", 2, Point(0, 0)),
             Vehicle("b", 2, Point(0, 0))
         )
-        val problem = Solution(stops,vehicles)
-        val solution = vrpSolver.solve(problem)
+        val problem = Solution(stops, vehicles)
+        val solution = testSolver.solve(problem)
 
         assertEquals(0, solution.score?.hardScore())
         assertEquals(-129, solution.score?.softScore())
     }
+}
+
+val testSolver = solver<Solution> {
+    entityClassList = listOf(
+        Stop::class.java,
+        RouteLink::class.java
+    )
+
+    scoreDirectorFactory {
+        easyScoreCalculatorClass = ScoreCalculator::class.java
+    }
+
+    exhaustiveSearch { }
 }

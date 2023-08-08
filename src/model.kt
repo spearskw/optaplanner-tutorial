@@ -5,16 +5,20 @@ import org.optaplanner.core.api.domain.solution.PlanningScore
 import org.optaplanner.core.api.domain.solution.PlanningSolution
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider
-import org.optaplanner.core.api.domain.variable.PlanningListVariable
+import org.optaplanner.core.api.domain.variable.AnchorShadowVariable
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable
+import org.optaplanner.core.api.domain.variable.PlanningVariable
+import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore
 
 @PlanningSolution
 data class Solution(
-    @ProblemFactCollectionProperty
-    @ValueRangeProvider
+    @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "stopRange")
     val stops: List<Stop>,
 
-    @PlanningEntityCollectionProperty
+    @ProblemFactCollectionProperty
+    @ValueRangeProvider(id = "vehicleRange")
     val vehicles: List<Vehicle>
 ) {
     @PlanningScore
@@ -22,21 +26,49 @@ data class Solution(
 }
 
 @PlanningEntity
+interface RouteLink {
+    @get:InverseRelationShadowVariable(sourceVariableName = "previous")
+    var next: Stop?
+}
+
 data class Vehicle(
     @PlanningId
     val id: String,
     val capacity: Int,
-    val depot: Point,
+    val depot: Point
+) : RouteLink {
+    override var next: Stop? = null
 
-    @PlanningListVariable
-    val stops: List<Stop> = emptyList()
-)
+    val stops: List<Stop>
+        get() {
+            val items = mutableListOf<Stop>()
+            var current: Stop? = this.next
+            while (current != null) {
+                items.add(current)
+                current = current.next
+            }
+            return items
+        }
+}
 
+@PlanningEntity
 data class Stop(
+    @PlanningId
     val id: String,
     val location: Point,
     val demand: Int
-)
+) : RouteLink {
+    @AnchorShadowVariable(sourceVariableName = "previous")
+    var vehicle: Vehicle? = null
+
+    @PlanningVariable(
+        graphType = PlanningVariableGraphType.CHAINED,
+        valueRangeProviderRefs = ["stopRange", "vehicleRange"]
+    )
+    var previous: RouteLink? = null
+
+    override var next: Stop? = null
+}
 
 data class Point(
     val x: Int,

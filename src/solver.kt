@@ -2,7 +2,8 @@ import dsl.*
 
 val vrpSolver = solver<Solution> {
     entityClassList = listOf(
-        Vehicle::class.java
+        Stop::class.java,
+        RouteLink::class.java
     )
 
     scoreDirectorFactory {
