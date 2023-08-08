@@ -9,5 +9,11 @@ val vrpSolver = solver<Solution> {
         easyScoreCalculatorClass = ScoreCalculator::class.java
     }
 
-    constructionHeuristic {  }
+    constructionHeuristic { }
+
+    localSearch {
+        termination {
+            stepCountLimit = 30000
+        }
+    }
 }
