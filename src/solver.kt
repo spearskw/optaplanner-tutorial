@@ -1,8 +1,9 @@
 import dsl.*
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType
 import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig
+import org.optaplanner.core.config.solver.EnvironmentMode
 import score.ScoreCalculator
-import score.StreamScore
 
 val vrpSolver = solver<Solution> {
     entityClassList = listOf(
@@ -10,8 +11,13 @@ val vrpSolver = solver<Solution> {
         RouteLink::class.java
     )
 
+    environmentMode = EnvironmentMode.FULL_ASSERT
+
     scoreDirectorFactory {
-        easyScoreCalculatorClass = ScoreCalculator::class.java
+        incrementalScoreCalculatorClass = IncrementalScore::class.java
+        assertionScoreDirectorFactory = ScoreDirectorFactoryConfig().apply {
+            easyScoreCalculatorClass = ScoreCalculator::class.java
+        }
     }
 
     constructionHeuristic {

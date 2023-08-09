@@ -5,9 +5,9 @@
         </encoder>
     </appender>
 
-    <logger name="org.optaplanner.solver" level="info" />
+    <logger name="org.optaplanner.solver" level="trace" />
 
-    <root level="info">
+    <root level="trace">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

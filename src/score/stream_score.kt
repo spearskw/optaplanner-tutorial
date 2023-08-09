@@ -18,11 +18,11 @@ fun distanceFromPrevious(factory: ConstraintFactory): Constraint {
     return factory.forEach(Stop::class.java)
         .filter { it.vehicle != null }
         .penalize(HardSoftScore.ONE_SOFT) {
-            it.distanceFromPrevious()
+            (it.distanceFromPrevious() * 10).toInt()
         }.asConstraint("distance")
 }
 
-fun Stop.distanceFromPrevious(): Int {
+private fun Stop.distanceFromPrevious(): Double {
     val distance = when (val prev = previous) {
         is Stop -> prev.location.distance(location)
         is Vehicle -> prev.depot.distance(location)
@@ -35,7 +35,7 @@ fun Stop.distanceFromPrevious(): Int {
         0.0
     }
 
-    return ((distance + returnDistance) * 10).toInt()
+    return distance + returnDistance
 }
 
 fun demand(factory: ConstraintFactory): Constraint {
