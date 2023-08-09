@@ -37,14 +37,13 @@ class IncrementalScore : IncrementalScoreCalculator<Solution, HardSoftScore> {
     }
 
     override fun beforeVariableChanged(entity: Any?, variableName: String?) {
-        println("about to change variable $variableName for entity $entity")
+        println("  about to change variable $variableName for entity $entity")
         when(variableName) {
             "vehicle" -> {
-                if (entity is Stop) {
-                    val vehicle = entity.vehicle?:return
-                    val oldDemand = capacityMap.getOrDefault(vehicle, vehicle.capacity)
-                    capacityMap[vehicle] = oldDemand + entity.demand
-                }
+                val stop = entity as Stop
+                val vehicle = stop.vehicle?:return
+                val oldDemand = capacityMap.getOrDefault(vehicle, vehicle.capacity)
+                capacityMap[vehicle] = oldDemand + stop.demand
             }
             "next" -> {
                 distance -= (entity as RouteLink).distanceToNext()
@@ -53,18 +52,17 @@ class IncrementalScore : IncrementalScoreCalculator<Solution, HardSoftScore> {
                 distance -= (entity as Stop).distanceFromPrevious()
             }
         }
-        println("  new distance: $distance   new capacity: ${capacityMap.values.sum()}")
+        println("    new distance: $distance   new capacity: ${capacityMap.values.sum()}")
     }
 
     override fun afterVariableChanged(entity: Any?, variableName: String?) {
-        println("changed variable $variableName for entity $entity")
+        println("  changed variable $variableName for entity $entity")
         when(variableName) {
             "vehicle" -> {
-                if (entity is Stop) {
-                    val vehicle = entity.vehicle?:return
-                    val oldDemand = capacityMap.getOrDefault(vehicle, vehicle.capacity)
-                    capacityMap[vehicle] = oldDemand - entity.demand
-                }
+                val stop = entity as Stop
+                val vehicle = stop.vehicle?:return
+                val oldDemand = capacityMap.getOrDefault(vehicle, vehicle.capacity)
+                capacityMap[vehicle] = oldDemand - stop.demand
             }
             "next" -> {
                 distance += (entity as RouteLink).distanceToNext()
@@ -73,7 +71,7 @@ class IncrementalScore : IncrementalScoreCalculator<Solution, HardSoftScore> {
                 distance += (entity as Stop).distanceFromPrevious()
             }
         }
-        println("  new distance: $distance   new capacity: ${capacityMap.values.sum()}")
+        println("    new distance: $distance   new capacity: ${capacityMap.values.sum()}")
     }
 
     override fun beforeEntityRemoved(entity: Any?) {
@@ -85,6 +83,7 @@ class IncrementalScore : IncrementalScoreCalculator<Solution, HardSoftScore> {
     }
 
     override fun calculateScore(): HardSoftScore {
+        println("calculating score")
         return HardSoftScore.of(
             capacityMap.values.filter { it < 0 }.sum(),
             -(distance * 10).toInt()
